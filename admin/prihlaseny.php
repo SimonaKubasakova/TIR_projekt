@@ -13,6 +13,9 @@ include 'hlavickaAdmin.php';
 	  <div class="collapse navbar-collapse " id="navbarNavSupportedContent">
 	    <ul class="navbar-nav ml-auto">
 	      <li class="nav-item">
+			  <?php
+			  session_destroy();
+			  ?>
 	        <a class="nav-link text-light " href="">Odhlásiť sa</a>
 	      </li>
 	    </ul>
