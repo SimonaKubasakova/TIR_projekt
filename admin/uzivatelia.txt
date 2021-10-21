@@ -1,4 +1,8 @@
 admin::heslo0
 bencik::heslo1
+<<<<<<< HEAD
 janko::heslo2
 simona::heslo3
+=======
+janko::heslo2
+>>>>>>> 7e115c3132e77b1b10f6432aec9423d2b756fbf7
