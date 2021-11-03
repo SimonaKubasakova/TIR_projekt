@@ -3,56 +3,87 @@
 	include 'navbarAdmin.php';
 	include 'pataAdmin.php';
 
-session_start();
 
-    if(isset($_SESSION['prihlaseny'])) {
-        header('Location: prihlaseny.php');
-        exit();
-    }
 ?>
 <?php
-$chyba ="";
 
-if($_SERVER['REQUEST_METHOD'] === 'POST'){
+$servername = "localhost";
+$username = "kbsk";
+$password = "FNiyZeesaAlze0mp";
+$db = "uzivatelia21";
 
-     $uzivatelia = file('uzivatelia.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-     //$prihlasenie = [];
-        foreach ($uzivatelia as $uzivatel) {
-            list($k,$h) = explode('::', $uzivatel);
-               $prihlasenie[$k] = $h;
-                   }
+// Create connection
+$conn = new mysqli($servername, $username, $password, $db);
 
-        if($_POST['password'] === $prihlasenie[$_POST['email-address']])
-        {
-            $_SESSION['prihlaseny'] = 1;
-            header('Location: prihlaseny.php');
-            exit();
-            ?>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
- <strong> Výborne... si prihlásený </strong> <?php echo "" ?>
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-<?php
-        }
-        else if (!$prihlasenie[$_POST['email-address']])
-        {
-            ?>//uzivatel neexistuje
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
- <strong> Ups! </strong> <?php echo $chyba; ?>
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-<?php
-        }
-        else {
-            //nespravne heslo...
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        }
+        $user = $_POST['email-address'];
+        $heslo = md5($_POST['password']);
+        $sql = 'SELECT * FROM uzivatelia WHERE login="'.$user.'" AND heslo="'.$heslo.'"';
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0) {
+            // output data of each row
+            while($row = $result->fetch_assoc()) {
+              echo "id: " . $row["id"]. " - Name: " . $row["login"]. " " . $row["heslo"]. "<br>";
+              $_SESSION["rola"] = $row["rola"];
+            }
+            session_start();
+              
+              $_SESSION["user"] = $user;
+              header('Location: prihlaseny.php');
+          } else {
+              echo 
+              '<div class="alert alert-danger" role="alert">
+              Nesprávne Meno alebo H
+              eslo
+            </div>';
+          }
+         
+        
+        // $pouzivatelia = file('uzivatelia.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        // $prihlasenie = [];
+
+        // foreach ($pouzivatelia as $pouzivatel) {
+        //  list($meno, $heslo) = explode('::',$pouzivatel);
+        //  $prihlasenie[$meno] = $heslo;
+        // }
+
+        // foreach ($prihlasenie as $user => $heslo) {
+            
+        //  if ( $_POST['meno'] == $user) {
+        //      if ( $_POST['heslo'] == $heslo) {
+        //          session_start();
+        //          $_SESSION["user"] = $user;
+        //          header('Location: index.php');
+        //      }
+        //  }       
+        // }
     }
- ?>
+    $conn->close();
+
+
+//$chyba ="";
+
+//if($_SERVER['REQUEST_METHOD'] === 'POST'){
+
+    // $uzivatelia = file('uzivatelia.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+     //$prihlasenie = [];
+      // foreach ($uzivatelia as $uzivatel) {
+          //  list($k,$h) = explode('::', $uzivatel);
+              // $prihlasenie[$k] = $h;
+                 //  }
+
+        //if($_POST['password'] === $prihlasenie[$_POST['email-address']])
+       // {
+            //$_SESSION['prihlaseny'] = 1;
+            //header('Location: prihlaseny.php');
+           // exit();
+            ?>
+
+
+            
+
 <body style="background-color:powderblue;">
 
     <div class="container mt-5">
@@ -91,7 +122,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                                              </svg>
                                         </span>
                                     </div>
-                                    <input type="password" id="password" class="form-control" name="password" required pattern="(?=.*\d).{5,}" >
+                                    <input type="password" id="password" class="form-control" name="password" required pattern="(?=.*\d).{4,}" >
                                     <div class="invalid-feedback">
                                       Prosím zadaj heslo (minimálne 5 znakov)
                                     </div>
