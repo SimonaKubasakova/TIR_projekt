@@ -3,18 +3,72 @@
 	include 'navbarAdmin.php';
 	include 'pataAdmin.php';
 
-session_start();
 
-    if(isset($_SESSION['prihlaseny'])) {
-        header('Location: prihlaseny.php');
-        exit();
-    }
 ?>
+<<<<<<< HEAD
 <?php   
 $chyba ="";
+=======
+<?php
+>>>>>>> cfc46635436c1c652b05e2db56a941c1ccf51aeb
 
-if($_SERVER['REQUEST_METHOD'] === 'POST'){
+$servername = "localhost";
+$username = "kbsk";
+$password = "FNiyZeesaAlze0mp";
+$db = "uzivatelia21";
 
+// Create connection
+$conn = new mysqli($servername, $username, $password, $db);
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+        $user = $_POST['email-address'];
+        $heslo = md5($_POST['password']);
+        $sql = 'SELECT * FROM uzivatelia WHERE login="'.$user.'" AND heslo="'.$heslo.'"';
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0) {
+            // output data of each row
+            while($row = $result->fetch_assoc()) {
+              echo "id: " . $row["id"]. " - Name: " . $row["login"]. " " . $row["heslo"]. "<br>";
+              $_SESSION["rola"] = $row["rola"];
+            }
+            session_start();
+              
+              $_SESSION["user"] = $user;
+              header('Location: prihlaseny.php');
+          } else {
+              echo 
+              '<div class="alert alert-danger" role="alert">
+              Nesprávne Meno alebo H
+              eslo
+            </div>';
+          }
+         
+        
+        // $pouzivatelia = file('uzivatelia.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        // $prihlasenie = [];
+
+        // foreach ($pouzivatelia as $pouzivatel) {
+        //  list($meno, $heslo) = explode('::',$pouzivatel);
+        //  $prihlasenie[$meno] = $heslo;
+        // }
+
+        // foreach ($prihlasenie as $user => $heslo) {
+            
+        //  if ( $_POST['meno'] == $user) {
+        //      if ( $_POST['heslo'] == $heslo) {
+        //          session_start();
+        //          $_SESSION["user"] = $user;
+        //          header('Location: index.php');
+        //      }
+        //  }       
+        // }
+    }
+    $conn->close();
+
+
+<<<<<<< HEAD
      $uzivatelia = file('uzivatelia.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
      $prihlasenie = [];
      $mena = [];
@@ -61,6 +115,29 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             }
         }
  ?>
+=======
+//$chyba ="";
+
+//if($_SERVER['REQUEST_METHOD'] === 'POST'){
+
+    // $uzivatelia = file('uzivatelia.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+     //$prihlasenie = [];
+      // foreach ($uzivatelia as $uzivatel) {
+          //  list($k,$h) = explode('::', $uzivatel);
+              // $prihlasenie[$k] = $h;
+                 //  }
+
+        //if($_POST['password'] === $prihlasenie[$_POST['email-address']])
+       // {
+            //$_SESSION['prihlaseny'] = 1;
+            //header('Location: prihlaseny.php');
+           // exit();
+            ?>
+
+
+            
+
+>>>>>>> cfc46635436c1c652b05e2db56a941c1ccf51aeb
 <body style="background-color:powderblue;">
 
     <div class="container mt-5">
@@ -99,7 +176,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                                              </svg>
                                         </span>
                                     </div>
-                                    <input type="password" id="password" class="form-control" name="password" required pattern="(?=.*\d).{5,}" >
+                                    <input type="password" id="password" class="form-control" name="password" required pattern="(?=.*\d).{4,}" >
                                     <div class="invalid-feedback">
                                       Prosím zadaj heslo (minimálne 5 znakov)
                                     </div>
