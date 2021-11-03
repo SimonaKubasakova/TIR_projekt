@@ -1,144 +1,74 @@
 <?php
-	include 'hlavickaAdmin.php';
-	include 'navbarAdmin.php';
-	include 'pataAdmin.php';
 
+$mysqli = new mysqli("localhost","kbsk","FNiyZeesaAlze0mp","uzivatelia21");
+
+// Check connection
+if ($mysqli -> connect_errno) {
+  echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
+}
+
+
+
+    include 'hlavickaAdmin.php';
+    include 'navbarAdmin.php';
+    include 'pataAdmin.php';
+
+
+session_start();
+    if(isset($_SESSION['user'])) {
+        header('Location: prihlaseny.php');
+    }
 
 ?>
-<<<<<<< HEAD
-<?php   
-$chyba ="";
-=======
 <?php
->>>>>>> cfc46635436c1c652b05e2db56a941c1ccf51aeb
+$chyba ="";
 
-$servername = "localhost";
-$username = "kbsk";
-$password = "FNiyZeesaAlze0mp";
-$db = "uzivatelia21";
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $db);
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
-        $user = $_POST['email-address'];
-        $heslo = md5($_POST['password']);
-        $sql = 'SELECT * FROM uzivatelia WHERE login="'.$user.'" AND heslo="'.$heslo.'"';
-        $result = $conn->query($sql);
+    //  $uzivatelia = file('uzivatelia.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    //  //$prihlasenie = [];
+    //     foreach ($uzivatelia as $uzivatel) {
+    //         list($k,$h) = explode('::', $uzivatel);
+    //            $prihlasenie[$k] = $h;
+    //                }
 
-        if ($result->num_rows > 0) {
-            // output data of each row
-            while($row = $result->fetch_assoc()) {
-              echo "id: " . $row["id"]. " - Name: " . $row["login"]. " " . $row["heslo"]. "<br>";
-              $_SESSION["rola"] = $row["rola"];
-            }
-            session_start();
-              
-              $_SESSION["user"] = $user;
-              header('Location: prihlaseny.php');
-          } else {
-              echo 
-              '<div class="alert alert-danger" role="alert">
-              Nesprávne Meno alebo H
-              eslo
-            </div>';
-          }
-         
-        
-        // $pouzivatelia = file('uzivatelia.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        // $prihlasenie = [];
+    $user = $_POST['email-address'];
+    $heslo = md5($_POST['password']);
 
-        // foreach ($pouzivatelia as $pouzivatel) {
-        //  list($meno, $heslo) = explode('::',$pouzivatel);
-        //  $prihlasenie[$meno] = $heslo;
-        // }
-
-        // foreach ($prihlasenie as $user => $heslo) {
-            
-        //  if ( $_POST['meno'] == $user) {
-        //      if ( $_POST['heslo'] == $heslo) {
-        //          session_start();
-        //          $_SESSION["user"] = $user;
-        //          header('Location: index.php');
-        //      }
-        //  }       
-        // }
+    $sql = 'SELECT * FROM uzivatelia WHERE login = "'.$user.'" AND heslo = "'.$heslo.'" ';
+    $result = $mysqli->query($sql);
+    
+    if ($result->num_rows > 0) {
+    // output data of each row
+    while($row = $result->fetch_assoc()) {
+        $_SESSION['user'] = $row["meno"];
+        $_SESSION['role'] = $row["rola"];
     }
-    $conn->close();
-
-
-<<<<<<< HEAD
-     $uzivatelia = file('uzivatelia.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-     $prihlasenie = [];
-     $mena = [];
-        foreach ($uzivatelia as $uzivatel) {
-            list($k,$h,$z) = explode('::', $uzivatel);
-               $prihlasenie[$k] = $h;
-               $mena[$k]= $z;
-                   }
-         $uzivatelS = $_POST['email-address'];
-
-        if($_POST['password'] === $prihlasenie[$_POST['email-address']])
-        { 
-            ?>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Identita "<?php echo $uzivatelS; ?>" potvrdená</strong> <?php echo $chyba; 
-            $_SESSION['user'] = $mena[$uzivatelS];
-            header('Location: prihlaseny.php');?>
-            
-          <?php 
-
-        }
-        else if (!$prihlasenie[$_POST['email-address']])
-        {
-            ?>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Užívateľ "<?php echo $uzivatelS; ?>" neexistuje</strong> <?php echo $chyba; ?>
-             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-               <span aria-hidden="true">&times;</span>
-             </button>
-           </div>
-           <?php
-        }
         
-        else {
-            ?>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Chyba autorizácie uživateľa "<?php echo $uzivatelS; ?>"</strong> <?php echo $chyba; ?>
-             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-               <span aria-hidden="true">&times;</span>
-             </button>
-           </div>
-            <?php
-        
-            }
-        }
+        header('Location: prihlaseny.php');
+        ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong> Výborne... si prihlásený </strong> <?php echo "" ?>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+    <?php
+
+    } else {
+    echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong> Ups! uzivatel neexistuje</strong> <?php echo $chyba; ?>
+     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+       <span aria-hidden="true">&times;</span>
+     </button>
+   </div>';
+    }
+
+    }
  ?>
-=======
-//$chyba ="";
-
-//if($_SERVER['REQUEST_METHOD'] === 'POST'){
-
-    // $uzivatelia = file('uzivatelia.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-     //$prihlasenie = [];
-      // foreach ($uzivatelia as $uzivatel) {
-          //  list($k,$h) = explode('::', $uzivatel);
-              // $prihlasenie[$k] = $h;
-                 //  }
-
-        //if($_POST['password'] === $prihlasenie[$_POST['email-address']])
-       // {
-            //$_SESSION['prihlaseny'] = 1;
-            //header('Location: prihlaseny.php');
-           // exit();
-            ?>
-
-
-            
-
->>>>>>> cfc46635436c1c652b05e2db56a941c1ccf51aeb
-<body style="background-color:powderblue;">
+<body style="background-color:white;">
 
     <div class="container mt-5">
         <div class="row justify-content-center">
@@ -176,9 +106,10 @@ $conn = new mysqli($servername, $username, $password, $db);
                                              </svg>
                                         </span>
                                     </div>
-                                    <input type="password" id="password" class="form-control" name="password" required pattern="(?=.*\d).{4,}" >
+                                    
+                                    <input type="password" class="form-control" id="password" name="password" required autocomplete="off" pattern="[^ ][\D|0-9]{3,9}">
                                     <div class="invalid-feedback">
-                                      Prosím zadaj heslo (minimálne 5 znakov)
+                                      Prosím zadaj heslo (minimálne 4 znaky)
                                     </div>
                                 </div>
 

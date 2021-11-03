@@ -1,36 +1,40 @@
 <?php
 include 'hlavickaAdmin.php';
 //include 'navbarAdmin.php';
+session_start();
 ?>
 
-	<body style="background-color:powderblue;">
+	<body style="background-color:white;">
 
-	<nav class="navbar navbar-expand-lg navbar-light bg-dark">
-	  <a class="navbar-brand text-white" href="#">Admin</a>
+	<nav class="navbar navbar-expand-lg navbar-light bg-info">
+	<a class="navbar-brand text-white" href="#">Administracia:</a>
+
+	  
 	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 	    <span class="navbar-toggler-icon"></span>
 	  </button>
 	  <div class="collapse navbar-collapse " id="navbarNavSupportedContent">
 	    <ul class="navbar-nav ml-auto">
-	      <li class="nav-item">
-		  <?php
-		  session_start();
-    if(isset($_SESSION['odhlaseny'])) {
-        header('Location: prihlaseny.php');
-        exit();
-
-    }?>
-			 
-
-	        <a class="nav-link text-light " href="../admin/odhlasenie.php">Odhlásiť sa</a>
-	      </li>
+		<form method="post">
+            <input type="submit" value="Odhlásiť sa" name="signOut" style="margin-right:auto; margin-left:auto;
+            display:block; margin-bottom:5%">
+        </form>
+		
 	    </ul>
 	  </div>
 	</nav>
+	<?php
+			  if(isset($_POST['signOut'])){
+				  unset($_SESSION['user']);
+				  unset($_SESSION['role']);
+				  header('Location: index.php');
+			  }
+			?>
 
-
-
-	<div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;height: 881px;">
+	<div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-info" style="width: 280px;height: 1000px;">
+	<img src="https://icon-library.com/images/icon-user/icon-user-13.jpg" alt="" class="img-thumbnail rounded-circle mx-auto d-block w-75">
+	<h2 style="color: white;"><?php echo $_SESSION["user"]; ?></h2>
+	  <h5 style="color: silver;"><?php echo $_SESSION["role"]; ?></h5>
 	    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
 	     <img src="" alt="">
 	    </a>
@@ -67,6 +71,8 @@ include 'hlavickaAdmin.php';
 	        </a>
 	      </li>
 	    </ul>
+		<div>
+	</div>
 	</div>
 
 <?php
