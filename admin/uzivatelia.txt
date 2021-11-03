@@ -1,4 +1,4 @@
-admin::heslo0
+admin::heslo0::Admin
 bencik::heslo1
 janko::heslo2
-simona::heslo3
+simona::heslo3::Simona

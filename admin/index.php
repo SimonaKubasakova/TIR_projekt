@@ -10,48 +10,56 @@ session_start();
         exit();
     }
 ?>
-<?php
+<?php   
 $chyba ="";
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
      $uzivatelia = file('uzivatelia.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-     //$prihlasenie = [];
+     $prihlasenie = [];
+     $mena = [];
         foreach ($uzivatelia as $uzivatel) {
-            list($k,$h) = explode('::', $uzivatel);
+            list($k,$h,$z) = explode('::', $uzivatel);
                $prihlasenie[$k] = $h;
+               $mena[$k]= $z;
                    }
+         $uzivatelS = $_POST['email-address'];
 
         if($_POST['password'] === $prihlasenie[$_POST['email-address']])
-        {
-            $_SESSION['prihlaseny'] = 1;
-            header('Location: prihlaseny.php');
-            exit();
+        { 
             ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
- <strong> Výborne... si prihlásený </strong> <?php echo "" ?>
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-<?php
+            <strong>Identita "<?php echo $uzivatelS; ?>" potvrdená</strong> <?php echo $chyba; 
+            $_SESSION['user'] = $mena[$uzivatelS];
+            header('Location: prihlaseny.php');?>
+            
+          <?php 
+
         }
         else if (!$prihlasenie[$_POST['email-address']])
         {
-            ?>//uzivatel neexistuje
+            ?>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
- <strong> Ups! </strong> <?php echo $chyba; ?>
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-<?php
+            <strong>Užívateľ "<?php echo $uzivatelS; ?>" neexistuje</strong> <?php echo $chyba; ?>
+             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+             </button>
+           </div>
+           <?php
         }
+        
         else {
-            //nespravne heslo...
-
+            ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Chyba autorizácie uživateľa "<?php echo $uzivatelS; ?>"</strong> <?php echo $chyba; ?>
+             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+             </button>
+           </div>
+            <?php
+        
+            }
         }
-    }
  ?>
 <body style="background-color:powderblue;">
 
