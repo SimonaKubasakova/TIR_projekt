@@ -22,9 +22,6 @@ session_start();
 ?>
 <?php
 $chyba ="";
-
-
-
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
     //  $uzivatelia = file('uzivatelia.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -41,7 +38,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $result = $mysqli->query($sql);
     
     if ($result->num_rows > 0) {
-    // output data of each row
     while($row = $result->fetch_assoc()) {
         $_SESSION['user'] = $row["meno"];
         $_SESSION['role'] = $row["rola"];
@@ -87,7 +83,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                                             </svg>
                                         </span>
                                     </div>
-                                    <input type="text" id="email_address" class="form-control" name="email-address" required pattern="\S.{2,9}.[^()/><\][,;*_|]+">
+                                    <input type="text" id="email_address" class="form-control" name="email-address" required pattern="[^ ][\D|0-9]{3,9}">
 
                                     <div class="invalid-feedback">
                                       Prosím zadaj meno (5-20 znakov).
