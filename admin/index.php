@@ -6,9 +6,6 @@ $mysqli = new mysqli("localhost","kbsk","FNiyZeesaAlze0mp","uzivatelia21");
 if ($mysqli -> connect_errno) {
   echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
 }
-
-
-
     include 'hlavickaAdmin.php';
     include 'navbarAdmin.php';
     include 'pataAdmin.php';
@@ -38,10 +35,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $result = $mysqli->query($sql);
     
     if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
+        $row = $result->fetch_assoc(); 
         $_SESSION['user'] = $row["meno"];
         $_SESSION['role'] = $row["rola"];
-    }
+    
         
         header('Location: prihlaseny.php');
         ?>
