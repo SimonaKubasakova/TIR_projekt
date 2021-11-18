@@ -1,10 +1,11 @@
 <?php 
+
 	error_reporting(0);
 	date_default_timezone_get('Europe/Bratislava');
 	include '../../assets/hlavicka.php';
 	include '../../assets/navbar.php';
 	include '../../assets/rozne.php';
-
+	$mysqli = new mysqli("localhost","kbsk","FNiyZeesaAlze0mp","prispevky21");
 ?>
 
 
@@ -98,7 +99,7 @@ if(empty($chyba)){
 	//echo $vybranyKluc;
 
 	//$prispevky = [];
-	$suborPrispevky = fopen('prispevky.csv', 'r');
+	/*$suborPrispevky = fopen('prispevky.csv', 'r');
 
 	while($prispevok = fgetcsv($suborPrispevky,1000,';')){
 		$prispevky[] = $prispevok;
@@ -106,7 +107,7 @@ if(empty($chyba)){
 
 	fclose($suborPrispevky);
 
-	$prispevky = array_reverse($prispevky);
+	$prispevky = array_reverse($prispevky);*/
  ?>
 
 
@@ -159,17 +160,38 @@ if(empty($chyba)){
 	<hr class="border-dark"> 
 	<div class="container">
 		<?php 
-			foreach ($prispevky as $prispevok) {
+		 	if ($conn->connect_error){
+				 die("connection failed:" .$conn->connect_error);
+			 }
+
+			 if ($mysqli -> connect_errno) {
+				 echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
+
+				 $sql = 'SELECT * FROM prispevky21';
+				 $result = $mysqli_query($sql, $conn);
+
+				 if ($result ->num_rows >0)
+				 {
+				while($row=$result->fetch_assoc())
+				{
+				echo '<h3>'.$row["meno"].'/h3>';
+				echo  '<small>'.$row["prispevok"].'</small>';
+				echo '<p>'.$row["cas"].'</p>';
+				}
+				}else{
+					echo "0 results";
+				}
+				 $conn->close();
+				 ?>
+
+			/*foreach ($prispevky as $prispevok) {
 				$datum = strtotime($prispevok[3]);
 				$datumTxt = date('j. ', $datum) .$mesiace[date('n', $datum) - 1]. date(' Y H:i', $datum); 
+
+				*/
 			
-		 ?>	
-			<h4><?php echo $prispevok[1] ?></h4>
-			<small><i> Odoslane: <?php echo $datumTxt ?></i></small>
-			<p>
-				<?php echo prelozBBCode(nl2br($prispevok[2])) ?>
-			</p>
-			<hr>
+		 	
+		 
 		<?php 
 			}
 		 ?>
