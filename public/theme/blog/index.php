@@ -1,25 +1,30 @@
 <?php 
+date_default_timezone_get("Europe/Bratislava");
+	include'../../assets/hlavicka.php';
+	include'../../assets/navbar.php';
+	include'../../assets/rozne.php';
 
-	error_reporting(0);
-	date_default_timezone_get('Europe/Bratislava');
-	include '../../assets/hlavicka.php';
-	include '../../assets/navbar.php';
-	include '../../assets/rozne.php';
-	$mysqli = new mysqli("localhost","kbsk","FNiyZeesaAlze0mp","prispevky21");
 ?>
-
-
-
 <?php 
+$servername = "localhost";
+$username = "admin";
+$password = "heslo";
+$dbname = "demo4c";
+$conn = new mysqli("localhost", "kbsk", "FNiyZeesaAlze0mp", "demo4c");
 
-$chyba ="";
-$meno = "";
-$sprava = "";
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
 
-/// odlišujeme prvy krat stranka spustena
+$sql = "SELECT * FROM prispevky";
+$result = $conn->query($sql);
+
+$meno ="";
+$chyba = "";
+$sprava ="";
+
 
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
-
 
 
 if(kontrola($_POST['odpoved']) == $_POST['spravna_odpoved']){
@@ -33,7 +38,7 @@ $novyPrispevok[] = $_POST['pocet'] + 1;
 $novyPrispevok[] = kontrola($_POST['meno']);
 $novyPrispevok[] = kontrola($_POST['sprava']);
 $novyPrispevok[] = date('Y-m-d H:i:s',time());
-
+header("Location: index.php");
 
 fputcsv($suborPrispevky, $novyPrispevok, ';');
 fclose($suborPrispevky);
@@ -86,7 +91,7 @@ if(empty($chyba)){
 
 
 	$suborCaptcha = file('captcha.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-	//$antiSpam = [];
+	$antiSpam = [];
 
 	for ($i=0; $i < count($suborCaptcha) ; $i+=2){
 
@@ -96,102 +101,76 @@ if(empty($chyba)){
 
 
 	$vybranyKluc = array_rand($antiSpam);
-	//echo $vybranyKluc;
+	$casy = [];
+	$mena = [];
+	$prispevky = [];
 
-	//$prispevky = [];
-	/*$suborPrispevky = fopen('prispevky.csv', 'r');
-
-	while($prispevok = fgetcsv($suborPrispevky,1000,';')){
-		$prispevky[] = $prispevok;
-	}
-
-	fclose($suborPrispevky);
-
-	$prispevky = array_reverse($prispevky);*/
+	if ($result->num_rows > 0) {
+		while($row = $result->fetch_assoc()) {
+			$casy[] = $row["cas"];
+			$mena[] = $row["meno"];
+			$prispevky[] = $row["prispevok"];
+		}
+	  } else {
+		echo "0 results";
+	  }
+	  $conn->close();
  ?>
-
-
-
-
-
 <section>
-	<h1 style="text-align: center;">Blog </h1>
+	<h1 class="py-3 text-center">Blog na Tému: </h1>
 
 	<div class="container">
 		<form action="index.php"  method="post">
 			<div class="form-group was-validated">
-				<small id="emailHelp" class="form-text text-muted"><b>Meno</b></small>
-				<input type="text" placeholder="Meno autora" class="form-control" required autocomplete="" 	pattern="\S.{4,20}" name="meno"  value="<?php echo $meno ?>"> 
+				<small id="emailHelp" class="form-text text-muted">Napište nam svoje meno</small>
+				<input type="text" placeholder="Meno autora" class="form-control" required autocomplete="" 	pattern="\S.{4,19}" name="meno"  value="<?php echo $meno ?>"> 
 				<div class="invalid-feedback">
-					Prosím vyplňte túto položku (5-20 znakov)
+					Prosim vyplnte túto položku. Zadajte 5-20 znakov!
 				</div>
 			</div>
 		
 			
-			<div class="form-group ">
-				 <small id="emailHelp" class="form-text text-muted"><b>Správa</b></small>
-				<textarea name="sprava"  cols="98" rows="5" placeholder="Váš text" class="form-control" required> <?php echo $sprava ?> </textarea>
+			<div class="form-group was-validated ">
+				 <small id="emailHelp" class="form-text text-muted">Povedzte nam svoj názor</small>
+				<textarea name="sprava"  cols="98" rows="5" placeholder="Váš text" class="form-control" required><?php echo $sprava?></textarea>
 			</div>
 		
 			<div class="form-group">
-					 <small> <b>Antispam:</b> <?php echo $antiSpam[$vybranyKluc]  ?> </small> 
+					 <small> Antispam: <?php echo $antiSpam[$vybranyKluc]  ?> </small> 
 			 <div class="form-group was-validated">
 
 			 	<div class="row" >	
 						<div class="col-md-7"> <input type="text" placeholder="Odpoveď" class="form-control just" required name="odpoved" pattern="<?php echo $vybranyKluc ?>" > </div>
 						<div class="col-md-4">
-							 <button type="reset" class="btn btn-light float-right border-dark">Vynulovať</button>		
+						 <button type="reset" class="btn btn-primary float-right">Vynulovať </button>
+										
 						</div>
 						<div class="col-md-1">
-							<button type="submit" class="btn btn-light float-right border-dark">Odoslať</button>
+							
+					    <button type="submit" class="btn btn-primary float-right">Odoslať </button>
 						</div>
 					 
 				</div>
+				
 		</div>
 		
 		<input type="hidden" name="spravna_odpoved" value="<?php echo $vybranyKluc ?>">
 		<input type="hidden" name="pocet" value="<?php echo count($prispevky) ?>">
-			
-		
 		</form>
 	</div>
-
 
 	<hr class="border-dark"> 
 	<div class="container">
 		<?php 
-		 	if ($conn->connect_error){
-				 die("connection failed:" .$conn->connect_error);
-			 }
-
-			 if ($mysqli -> connect_errno) {
-				 echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
-
-				 $sql = 'SELECT * FROM prispevky21';
-				 $result = $mysqli_query($sql, $conn);
-
-				 if ($result ->num_rows >0)
-				 {
-				while($row=$result->fetch_assoc())
-				{
-				echo '<h3>'.$row["meno"].'/h3>';
-				echo  '<small>'.$row["prispevok"].'</small>';
-				echo '<p>'.$row["cas"].'</p>';
-				}
-				}else{
-					echo "0 results";
-				}
-				 $conn->close();
-				 ?>
-
-			/*foreach ($prispevky as $prispevok) {
-				$datum = strtotime($prispevok[3]);
+			for ($i = 0; $i < count($prispevky); $i++) {
+				$datum = strtotime($casy[$i]);
 				$datumTxt = date('j. ', $datum) .$mesiace[date('n', $datum) - 1]. date(' Y H:i', $datum); 
-
-				*/
 			
-		 	
-		 
+		 ?>	
+		 <?php echo '<h4>'.$mena[$i],'</h4>'?>
+			<small><i> Odoslane: <?php echo $datumTxt ?></i></small>
+			<?php echo '<p>'.$prispevky[$i].'</p>' ?>
+			<hr>
 		<?php 
 			}
 		 ?>
@@ -199,5 +178,5 @@ if(empty($chyba)){
 </section>
 
 <?php 
-include '../../assets/pata.php';
+include'../../assets/pata.php';
 ?>

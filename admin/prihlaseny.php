@@ -13,6 +13,7 @@ session_start();
 			?>
 
 	<body style="background-color:white;">
+	
 
 	<nav class="navbar navbar-expand-lg navbar-light bg-info">
 	<a class="navbar-brand text-white" href="#">Administracia:</a>
@@ -22,6 +23,39 @@ session_start();
 	  <div class="collapse navbar-collapse " id="navbarNavSupportedContent">
 	  </div>
 	</nav>
+	<table class="table table-striped"style="width:70%;margin-left:25%;text-align;">
+  <thead>
+    <tr>
+      <th scope="col">Meno</th>
+      <th scope="col">Text</th>
+      <th scope="col">Cas</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>-</td>
+      <td>-</td>
+	  <td><button type="button" class="btn btn-dark">Vymazať</button></td>
+      
+    </tr>
+    <tr>
+      <th scope="row">2</th>
+      <td>-</td>
+      <td>-</td>
+	  <td><button type="button" class="btn btn-dark">Vymazať</button></td>
+      
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td>-</td>
+      <td>-</td>
+	  <td><button type="button" class="btn btn-dark">Vymazať</button></td>
+      
+    </tr>
+  </tbody>
+</table>
+
 	<div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-info" style="width: 280px;height: 1000px;">
 	<img src="https://icon-library.com/images/icon-user/icon-user-13.jpg" alt="" class="img-thumbnail rounded-circle mx-auto d-block w-75">
 	<h2 style="color: white;"><?php echo $_SESSION["user"]; ?></h2>
@@ -72,6 +106,8 @@ session_start();
 	    </ul>
 	</div>
 	</div>
+	
+
 
 <?php
 include 'pataAdmin.php';
