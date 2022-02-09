@@ -1,13 +1,11 @@
 <?php
 include 'hlavickaAdmin.php';
-include 'ostatne.php';
+include 'rozne.php';
 //include 'navbarAdmin.php';
+include 'database.php';
 
-  $mysqli= new mysqli("localhost","kbsk","FNiyZeesaAlze0mp","demo4c");
- 
-
-  $sql = 'SELECT * FROM prispevky';
-  $result = $mysqli->query($sql);
+$sql = 'SELECT * FROM prispevky';
+$result = $mysqli->query($sql);
 
 session_start();
 if(isset($_SESSION['user'])) {
@@ -22,7 +20,7 @@ if(isset($_SESSION['user'])) {
 ?>
 	<body class="bg-white">
 
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+	<nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
 	<a class="navbar-brand text-white" href="#">Administrácia:</a>
 
 	  <div class="collapse navbar-collapse " id="navbarNavSupportedContent">
@@ -47,10 +45,10 @@ foreach ($menu as $odkaz => $hodnota) {
 	</nav>
   <div class="row">
     <div class="col-md-2">
-      	<div class="d-flex flex-column flex-shrink-0 p-3 text-dark bg-dark" style="height: 900px; width: 200px;">
+      	<div class="d-flex flex-column flex-shrink-0 p-3 text-dark bg-secondary" style="height: 900px; width: 200px;">
 		  <img src="https://icon-library.com/images/icon-user/icon-user-13.jpg" alt="" class="img-thumbnail rounded-circle mx-auto d-block w-85">
           <h2 style="color: white;"><?php echo $_SESSION["user"]; ?></h2>
-            <h5 style="color: grey;"><?php echo $_SESSION["role"]; ?></h5>
+            <h5 style="color: silver;"><?php echo $_SESSION["role"]; ?></h5>
               <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
               <img src="" alt="">
               </a>
@@ -68,7 +66,7 @@ foreach ($menu as $odkaz => $hodnota) {
                   </a>
                 </li>
                 <li>
-                  <a href="odhlasenie.php" class="nav-link btn btn-dark text-white">
+                  <a href="odhlasenie.php" class="nav-link btn btn-dark text-white" style="margin-top: 150%">
                     Odhlásiť sa
                   </a>
                 </li>
@@ -81,7 +79,7 @@ foreach ($menu as $odkaz => $hodnota) {
       <?php
         if (isset($_GET['page']) && $_GET['page'] == 'blog') {
       ?>
-          <table class="mt-2 table table-striped">
+          <table class="mt-2 table table-striped" style="width: 80% margin:50%">
             <thead>
               <tr>
                 <th scope="col">Meno</th>
@@ -139,6 +137,8 @@ foreach ($menu as $odkaz => $hodnota) {
     })
 
   </script>
+  
+
       <?php
         }else{
       ?>

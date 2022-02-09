@@ -1,6 +1,6 @@
 <?php
-
-$mysqli = new mysqli("localhost","kbsk","FNiyZeesaAlze0mp","uzivatelia21");
+include 'database.php';
+//$mysqli = new mysqli("localhost","kbsk","FNiyZeesaAlze0mp","uzivatelia21");
 
 // Check connection
 if ($mysqli -> connect_errno) {
