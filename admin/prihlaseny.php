@@ -59,11 +59,15 @@ foreach ($menu as $odkaz => $hodnota) {
                     Domov
                   </a>
                 </li>
-                
-                <li class="pb-3">
+                <li>
                   <a href="prihlaseny.php?page=blog" class="nav-link text-white">
                     Blog
                   </a>
+                </li>
+                <li>
+                <a href="prihlaseny.php?page=spravy" class="nav-link text-white">
+                  Správy
+                </a>
                 </li>
                 <li>
                   <a href="odhlasenie.php" class="nav-link btn btn-dark text-white" style="margin-top: 150%">
@@ -139,6 +143,10 @@ foreach ($menu as $odkaz => $hodnota) {
   </script>
   
 
+  <?php
+        } else if (isset($_GET['page']) && $_GET['page'] == 'spravy') {
+        ?>
+        <p>Spravy</p>
       <?php
         }else{
       ?>
@@ -154,7 +162,7 @@ foreach ($menu as $odkaz => $hodnota) {
 <?php
 }
 else{
-	header("Location: index.php");
+  header("Location: index.php");
 }
 include 'pataAdmin.php';
 ?>
