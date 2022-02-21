@@ -288,7 +288,7 @@ foreach ($menu as $odkaz => $hodnota) {
         let Autor = BtnClick.getAttribute('data-bs-autor');
         document.getElementById('spanAutor').innerHTML = Autor;
 
-        let Pripevok = BtnClick.getAttribute('data-bs-prisp');
+        let Prispevok = BtnClick.getAttribute('data-bs-prisp');
         document.getElementById('spanPrisp').innerHTML = Prispevok;
 
         let Publ = BtnClick.getAttribute('data-bs-publ');
