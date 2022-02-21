@@ -1,0 +1,61 @@
+<body class="bg-white">
+
+	<nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+	<a class="navbar-brand text-white" href="#">Administrácia:</a>
+
+	  <div class="collapse navbar-collapse " id="navbarNavSupportedContent">
+	  <ul class="navbar-nav ml-auto">
+
+<?php
+	$aktivnaStranka = basename(dirname($_SERVER['SCRIPT_NAME']));
+	$riadky = file('../admin/menuAdmin.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES); 
+
+	foreach ($riadky as  $riadok) {
+	  list($k,$h) = explode('::', $riadok); 
+	  $menu[$k] = $h;
+	}
+foreach ($menu as $odkaz => $hodnota) {
+	  echo  '<li class="nav-item">
+		  <a class="nav-link  '.($aktivnaStranka == $odkaz? 'active':'').'" href="' .$odkaz. '.php">'.$hodnota.'</a>
+		</li>';
+	}
+ ?>  
+</ul>
+	  </div>
+	</nav>
+  <div class="row">
+    <div class="col-md-2">
+      	<div class="d-flex flex-column flex-shrink-0 p-3 text-dark bg-secondary" style="height: 900px; width: 200px;">
+		  <img src="https://icon-library.com/images/icon-user/icon-user-13.jpg" alt="" class="img-thumbnail rounded-circle mx-auto d-block w-85">
+          <h2 style="color: white;"><?php echo $_SESSION["user"]; ?></h2>
+            <h5 style="color: silver;"><?php echo $_SESSION["role"]; ?></h5>
+              <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+              <img src="" alt="">
+              </a>
+              <hr>
+              <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                  <a href="prihlaseny.php" class="nav-link  text-white" aria-current="page">
+                    Domov
+                  </a>
+                </li>
+                <li>
+                  <a href="prihlaseny.php?page=blog" class="nav-link text-white">
+                    Blog
+                  </a>
+                </li>
+                <li>
+                <a href="prihlaseny.php?page=spravy" class="nav-link text-white">
+                  Správy
+                </a>
+                </li>
+                <li>
+                  <a href="odhlasenie.php" class="nav-link btn btn-dark text-white" style="margin-top: 150%">
+                    Odhlásiť sa
+                  </a>
+                </li>
+              </ul>
+            <div>
+          </div>
+    </div>
+    </div>
