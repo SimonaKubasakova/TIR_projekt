@@ -1,45 +1,33 @@
 <?php
 include 'hlavickaAdmin.php';
 include 'rozne.php';
-//include 'navbarAdmin.php';
 include 'database.php';
+  $mysqli -> set_charset("utf8");
 
-$mysqli -> set_charset("utf8");
-$sql = 'SELECT * FROM prispevky';
-$result = $mysqli->query($sql);
-
-
+  $sql = 'SELECT * FROM prispevky';
+  $result = $mysqli->query($sql);
 
 session_start();
 if(isset($_SESSION['user'])) {
  if( isset($_GET['delete'])){
 
-			$id = $_GET['delete'];
+      $id = $_GET['delete'];
 
-			$sql = "DELETE FROM prispevky WHERE id=$id";
-			$mysqli->query($sql);
-			header("Location: prihlaseny.php?page=blog");
- }
- 
- if( isset($_GET['delete2'])){
-
-			$id = $_GET['delete2'];
-
-			$sql = "DELETE FROM spravy WHERE id=$id";
-			$mysqli->query($sql);
-			header("Location: prihlaseny.php?page=spravy");
- }
-
- 
+      $sql = "DELETE FROM prispevky WHERE id=$id";  
+      $mysqli->query($sql);
+      header("Location: prihlaseny.php?page=blog");
+    }
+    if(!(isset($_SESSION["user"]))){
+      header('Location: index.php');
+  }
+  if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+  }
+    
 ?>
-<div id="alertsuccess" class='alert alert-success alert-dismissible collapse' role='alert'>
-    Prispevok bol úspešne odstránený!
-    <button type='button' onclick="" id="hidebtn" class='btn-close' aria-label='Close' data-bs-dismiss="alert"></button>
-</div>
+  <body class="bg-white">
 
-	<body class="bg-white">
-
-	<nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
 	<a class="navbar-brand text-white" href="#">Administrácia:</a>
 
 	  <div class="collapse navbar-collapse " id="navbarNavSupportedContent">
@@ -102,10 +90,14 @@ foreach ($menu as $odkaz => $hodnota) {
       <?php
         if (isset($_GET['page']) && $_GET['page'] == 'blog') {
       ?>
-          <table class="mt-2 table table-striped" style="width: 80% margin:50%">
-          
+
+<div id="Alertsuccess" class='alert alert-success alert-dismissible collapse' role='alert'>
+    Prispevok bol úspešne odstránený!
+    <button type='button' onclick="" id="hidebtn" class='btn-close' aria-label='Close' data-bs-dismiss="alert"></button>
+</div>
+          <table class="mt-2 table table-striped">
             <thead>
-              <tr>
+              <tr >
                 <th scope="col">Meno</th>
                 <th scope="col">Text</th>
                 <th scope="col">Čas</th>
@@ -113,9 +105,7 @@ foreach ($menu as $odkaz => $hodnota) {
               </tr>
             </thead>
               <tbody>
-            <?php
-			 
-			while($row = $result->fetch_assoc()) {	?>
+            <?php while($row = $result->fetch_assoc()) {  ?>
               <tr>
                 <td><?= $row["meno"] ?></td>
                 <td><?= prelozBBCode($row["prispevok"]) ?></td>
@@ -138,7 +128,7 @@ foreach ($menu as $odkaz => $hodnota) {
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zavrieť</button>
-          <a id="btn-remove" class="btn btn-dark" data-bs-target="#deleteModal">Zmazať</a>
+          <a id="btn-remove" class="btn btn-dark text-white" data-bs-target="#deleteModal">Zmazať</a>
         </div>
       </div>
     </div>
@@ -160,165 +150,225 @@ foreach ($menu as $odkaz => $hodnota) {
         document.getElementById('btn-remove').href = link;
     })
 
+    if (sessionStorage.getItem('deleteModal') == 'true'){
+                  document.getElementById('Alertsuccess').className = 'alert alert-success alert-dismissible';
+                 
+
+                }
+
   </script>
   
 
-  <?php
+<div class="col-md-8 pt-5 pb-5">
+<?php
         } else if (isset($_GET['page']) && $_GET['page'] == 'spravy') {
-        ?>
-        <?php
-        $sql = 'SELECT * FROM spravy';
-        $result = $mysqli->query($sql);
-      ?>
-        <h4 style="text-align: center">Správy</h4>
-        <div class="col-md-12 pt-1 pb-1">
-         <table class="mt-2 table table-striped" style="">
-         <h4 style="float:left ">Zoznam článkov</h4>
-          <button class="btn btn-dark text-white" style="float:right " data-bs-toggle="modal" data-bs-target="#novyModal">Nový článok</button>
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Názov článku/Čas publikovania/Obsah</th>
-                
-                <th scope="col"></th>
-                <th scope="col" >Publik</th>
-                <th scope="col">Úpravy článku</th>
-               
-              </tr>
-            </thead>
-              <tbody>
-            <?php
-			 
-			while($row = $result->fetch_assoc()) {	?>
-             <tr style="width: 30px;">
-                <td><?= $row["id"] ?></td>
-                <td style="max-width: 500px;">
-                <b><?= $row["nadpis"] ?></b>
-                <i> Publikované <?= $row["cas"] ?></i>  <br>
-                <img src="../public/theme/spravy/images/<?php echo $row['obrazok'] ?>" alt="" style="width: 100px; height: 60px; float: left;"><span class="d-inline-block text-truncate" style="max-width: 500px; padding-left: 30px;"><?php echo $row['obsah'] ?></span></td>
-                <td></td>
-                <td><div class="form-check" style="float:right">
-                  <input type="checkbox" class="form-check-input" name="" id="" value="checkedValue" checked>
-                </div></td>
-                <td><a type="button"style="float:right" data-bs-id="<?= $row["id"] ?>" data-bs-autor="<?= $row["nadpis"] ?>"  data-bs-publ="<?= $row["cas"] ?>"  data-bs-prisp="<?= $row["obsah"] ?>"data-bs-obr="<?= $row["obrazok"] ?>" class="btn btn-dark text-white" data-bs-toggle="modal" data-bs-target="#nahladModal">Náhľad</a></td>
-                <td><a type="button" style="float:right" data-bs-id="<?= $row["id"] ?>" data-bs-name="<?= $row["nadpis"] ?>"  data-bs-obsah="<?= $row["obsah"] ?>"  data-bs-cas="<?= $row["cas"] ?>"data-bs-img="<?= $row["obrazok"] ?>" class="btn btn-dark text-white" data-bs-toggle="modal" data-bs-target="#deleteModal2">Zmazať</a></td>
-          
-          <td><a type="button"class="btn btn-dark text-white" style="float:right">Upraviť</td>
-        </tr>
-            </div>
-              
-  <?php } ?>
-    </tbody>
-  </table>
+?>
+          <div id="alertsuccess" class='alert alert-success alert-dismissible collapse' role='alert'>
+    Prispevok bol úspešne odstránený!
+    <button type='button' onclick="" id="hidebtn" class='btn-close' aria-label='Close' data-bs-dismiss="alert"></button>
+</div>
 
-  <div  class="modal fade m" id="deleteModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Naozaj chceš zmazať článok?</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-         <b><span id="spanName"></span></b> <br>
-         <i><span id="spanCas"></span></i> <br> <br>
-         <span id="spanObsah"></span>
-         <span id="spanImg"></span>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zavrieť</button>
-          <a id="btn-remove" class="btn btn-dark" data-bs-target="#deleteModal2">Zmazať</a>
-        </div>
-      </div>
-    </div>
-  </div>
+    <textarea hidden id="lab" cols="30" rows="1" name="label"></textarea>
+    <textarea hidden id="id" cols="30" rows="1"></textarea>
+
+    <h4  class="text-center ">Správy</h4>  
 
 
-  <script>
-    var myModal = document.getElementById('deleteModal2')
-    myModal.addEventListener('shown.bs.modal', function (event) {
-        let BtnClick = event.relatedTarget;
 
-        let id = BtnClick.getAttribute('data-bs-id');
-
-        let Name = BtnClick.getAttribute('data-bs-name');
-        document.getElementById('spanName').innerHTML = Name;
-
-        let Obsah = BtnClick.getAttribute('data-bs-obsah');
-        document.getElementById('spanObsah').innerHTML = Obsah;
-
-        let Cas = BtnClick.getAttribute('data-bs-cas');
-        document.getElementById('spanCas').innerHTML = Cas;
-
-        let Img = BtnClick.getAttribute('data-bs-img');
-        document.getElementById('spanImg').innerHTML = Img;
-
-        let link = "?page=spravy&delete2="+id;
-
-        document.getElementById('btn-remove').href = link;
-    })
-
-  </script>
-  <div  class="modal fade m" id="nahladModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Náhľad článku</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-         <b><span id="spanAutor"></span></b>
-         <i><span id="spanPubl"></span></i> <br> <br>
-         <span id="spanPrisp"></span>
-         <span id="spanObr"></span>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zavrieť</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    var myModal = document.getElementById('nahladModal')
-    myModal.addEventListener('shown.bs.modal', function (event) {
-        let BtnClick = event.relatedTarget;
-
-        let id = BtnClick.getAttribute('data-bs-id');
-
-        let Autor = BtnClick.getAttribute('data-bs-autor');
-        document.getElementById('spanAutor').innerHTML = Autor;
-
-        let Prispevok = BtnClick.getAttribute('data-bs-prisp');
-        document.getElementById('spanPrisp').innerHTML = Prispevok;
-
-        let Publ = BtnClick.getAttribute('data-bs-publ');
-        document.getElementById('spanPubl').innerHTML = Publ;
-
-        let Obr = BtnClick.getAttribute('data-bs-obr');
-        document.getElementById('spanObr').innerHTML = Obr;
-
-    })
-
-  </script>
-  <div  class="modal fade m" id="novyModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Nový článok</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
         
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zavrieť</button>
-        </div>
-      </div>
-    </div>
-  </div>
+<div> 
+
+<div class="col-md-12 pt-1 pb-1">
+
+          <table class="table table-striped" style="width: 100">
+          <h4 style="float:left ">Zoznam článkov</h4>
+            <button class="btn btn-dark text-white" style="float:right " data-bs-toggle="modal" data-bs-target="#novyModal">Nový článok</button>
+
+            
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Názov Článku / Obsah / Čas publikovania</th>
+                <th>Úpravy článku   </th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            $sql = "SELECT * FROM spravy";
+
+            $result = $conn->query($sql);
+         
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    ?>
+                        <tr>
+                        <td style="text-align: center; vertical-align: middle;"><p style="font-weight: bold;"><?php echo $row['id'] ?></p></td>
+                        <td><p style="font-weight: bold;"><?php echo $row['nadpis'] ?></p>
+                         <img src="../public/theme/spravy/images/<?php echo $row['obrazok'] ?>" alt="" style="width: 100px; height: 70px; float: left;"> <span class="d-inline-block text-truncate" style="max-width: 800px; padding-left: 30px;"><?php echo $row['obsah'] ?></span></td>
+                        <td style='text-align: center; vertical-align: middle;'>
+                            <button type='button' class='btn btn-dark text-white' data-bs-toggle='modal' data-bs-target='#view-modal' onclick="document.getElementById('lab').innerHTML=JSON.stringify({id: '<?php echo $row['id'] ?>', nadpis: '<?php echo $row['nadpis'] ?>', cas: '<?php echo $row['cas'] ?>', obsah: '<?php echo preg_replace('/\r|\n/', '', $row['obsah']); ?>', obrazok: '<?php echo $row['obrazok'] ?>'}); document.getElementById('nadpis-view').innerHTML=(JSON.parse(document.getElementById('lab').innerHTML)).nadpis; document.getElementById('cas-view').innerHTML=(JSON.parse(document.getElementById('lab').innerHTML)).cas; document.getElementById('obsah-view').innerHTML=(JSON.parse(document.getElementById('lab').innerHTML)).obsah; document.getElementById('image-view').src='../public/theme/spravy/images/' + (JSON.parse(document.getElementById('lab').innerHTML)).obrazok;"><i class='bi bi-file-text-fill' ></i> Náhľad</button>
+                        <button type='button' class='btn btn-dark text-white' data-bs-toggle='modal' data-bs-target='#edit-modal'><i class='bi bi-pencil-fill'></i> Úprava</button>
+                        
+                        <button type="button" class="btn btn-dark text-white" data-bs-toggle="modal" data-bs-target="#remove-modal" onclick="document.getElementById('lab').innerHTML=JSON.stringify({id: '<?php echo $row['id'] ?>', nadpis: '<?php echo $row['nadpis'] ?>', cas: '<?php echo $row['cas'] ?>', obsah: '<?php echo preg_replace('/\r|\n/', '', $row['obsah']); ?>', obrazok: '<?php echo $row['obrazok'] ?>'}); document.getElementById('nadpis').innerHTML=(JSON.parse(document.getElementById('lab').innerHTML)).nadpis; document.getElementById('cas').innerHTML=(JSON.parse(document.getElementById('lab').innerHTML)).cas; document.getElementById('obsah').innerHTML=(JSON.parse(document.getElementById('lab').innerHTML)).obsah; document.getElementById('image').src='../public/theme/spravy/images/' + (JSON.parse(document.getElementById('lab').innerHTML)).obrazok;
+                        document.getElementById('nadpis-view').innerHTML=(JSON.parse(document.getElementById('lab').innerHTML)).nadpis; document.getElementById('cas-view').innerHTML=(JSON.parse(document.getElementById('lab').innerHTML)).cas; document.getElementById('obsah-view').innerHTML=(JSON.parse(document.getElementById('lab').innerHTML)).obsah; document.getElementById('image-view').src='../public/theme/spravy/images/' + (JSON.parse(document.getElementById('lab').innerHTML)).obrazok;"><i class="bi bi-trash3-fill"></i> Zmazať</button></td>
+                        
+                      </tr>
+                    <?php
+                }
+              } else {
+              }
+              ?>  
+            </div>
+                            <div class="modal fade " id="view-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdrop" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="staticBackdropLabel">Náhľad článku</h5>
+                      <button type="button" class="btn-close " data-bs-dismiss="modal"></button>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                    <div>
+                        <p id="nadpis-view" style="font-weight: bold;"></p>
+                        <i class="bi bi-clock">  </i><i id="cas-view" style="font-size: 12px;"></i>
+                        </div>
+                    <div>
+                        <img id="image-view" src="" alt="" style="width: 200px; height: 150px; float: left; padding-right: 20px;">
+                        <p id="obsah-view" style="font-size: 12px;"></p>
+                    </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-dark text-white " data-bs-dismiss="modal">Zavrieť</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="modal fade" id="edit-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdrop" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="staticBackdropLabel">Úprava článku</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                <div class="row">
+                    
+                    <div>
+                        <label for="basic-url" class="form-label">Nadpis: </label>
+                        <input type="text" style="width:800px;" name="meno" id=editNadpis" class="form-control" placeholder="" value="">
+                       
+                        <label for="basic-url" class="form-label">Článok: </label>
+                        <textarea class="form-control" aria-label="With textarea" id="editSprava" rows="6"><?php echo $row['obsah'] ?></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                
+                <input type="hidden" name="sprava" id="edit_msg" value="">
+                <input type="hidden" name="type" value="edit">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zavrieť</button>
+                <button type="button" data-params="" id="editButton" class="btn btn-outline-dark" hidden>Upraviť</button>
+                <button type="button" data-params="" id="pridatButton" class="btn btn-outline-dark">Pridať</button>
+            </div>
+                  </div>
+                </div>
+              </div>
+              
+              
+              <div class="modal fade" id="novyModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdrop" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="staticBackdropLabel">Nový článok</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                      </button>
+                    </div>
+                    
+                    <div class="modal-body">
+                <div class="row">
+                    
+                    <div>
+                        <label for="basic-url" class="form-label">Nadpis: </label>
+                        <input type="text" style="width:800px;" name="meno" id="editNadpis" class="form-control" placeholder="Nadpis" value="">
+                        <label for="basic-url" class="form-label">Článok: </label>
+                        <textarea class="form-control" aria-label="With textarea" id="editSprava" rows="6"></textarea>
+                    </div>
+                </div>
+            </div>
+             <div class="m-3">
+                 <label for="formFile" class="form-label">Pridať súbor</label>
+                 <input class="form-control" type="file" id="formFile">
+            </div>
+            <div class="modal-footer">
+                
+                <input type="hidden" name="sprava" id="edit_msg" value="">
+                <input type="hidden" name="type" value="edit">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zavrieť</button>
+                <button type="button" data-params="" id="editButton" class="btn btn-outline-dark" hidden>Upraviť</button>
+                <button type="button" data-params="" id="pridatButton" class="btn btn-outline-dark">Pridať</button>
+            </div>
+                  </div>
+                </div>
+              </div>
+
+                           <div class="modal fade" id="remove-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdrop" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="staticBackdropLabel">Naozaj chceš vymazať článok?</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <p id="nadpis" style="font-weight: bold;"></p>
+                            <i class="bi bi-clock">  </i><i id="cas" style="font-size: 12px;"></i>
+                        </div>
+                    <div>
+                        <img id="image" src="" alt="" style="width: 200px; height: 150px; float: left; padding-right: 20px;">
+                        <p id="obsah" style="font-size: 12px;"></p>
+                    </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-dark text-white" data-bs-dismiss="modal">Zavrieť</button>
+                      <form action="prihlaseny.php?page=spravy" method="post">
+                        <button type="submit" class="btn btn-dark text-white" data-bs-dismiss="modal" name="zmazat" onclick="document.cookie='json_dat = ' + document.getElementById('lab').innerHTML;">Zmazať</button>
+                      </form>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <script>
+                if (sessionStorage.getItem('wasRemoved') == 'true'){
+                  document.getElementById('alertsuccess').className = 'alert alert-success alert-dismissible';
+                  sessionStorage.setItem('wasRemoved', 'false');
+                  document.cookie = 'json_dat = false; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+
+                }
+              </script>
+
+              <?php
+            if (isset($_POST['zmazat'])){
+
+                $sql = "DELETE FROM spravy WHERE id = ".json_decode($_COOKIE['json_dat'])->id;
+
+                if ($conn->query($sql)){
+                    echo "<script>sessionStorage.setItem('wasRemoved', 'true');</script>";
+                    echo "<script> document.location = 'prihlaseny.php?page=spravy'; </script>";
+                    $conn->close();
+                }
+            }
+  ?>
+</div>
+        
 
       <?php
-        }else{
+        }else {
       ?>
         <p>Domov</p>
       <?php
@@ -326,14 +376,10 @@ foreach ($menu as $odkaz => $hodnota) {
       ?>
     </div>
   </div>
-
-
-
 <?php
 }
 else{
   header("Location: index.php");
 }
-
 include 'pataAdmin.php';
 ?>
